@@ -21,4 +21,5 @@ puppeteer
   })
   .catch(function(err) {
     //handle error
+    console.log(err);
   });
