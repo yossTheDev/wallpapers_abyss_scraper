@@ -4,22 +4,13 @@ const url = 'https://www.google.com';
 
 console.log("EMPEZANDO");
 
-puppeteer
-  .launch()
-  .then(function(browser) {
-    return browser.newPage();
-  })
-  .then(function(page) {
-    return page.goto(url).then(function() {
-      return page.content();
-    });
-  })
-  .then(function(html) {
-    $('h2', html).each(function() {
-      console.log($(this).text());
-    });
-  })
-  .catch(function(err) {
-    //handle error
-    console.log(err);
-  });
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto('https://www.google.com');
+  await page.screenshot({path: 'example.png'});
+  let content = await page.content;
+  console.log(content);
+
+  await browser.close();
+})();
