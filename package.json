@@ -4,6 +4,7 @@
   "description": "Simple scraper",
   "main": "scraper.js",
   "scripts": {
+    "start":"node scraper.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
