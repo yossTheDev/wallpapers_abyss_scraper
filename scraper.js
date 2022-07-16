@@ -2,6 +2,8 @@ const puppeteer = require('puppeteer');
 const $ = require('cheerio');
 const url = 'https://www.google.com';
 
+console.log("EMPEZANDO");
+
 puppeteer
   .launch()
   .then(function(browser) {
