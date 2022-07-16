@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 const $ = require('cheerio');
-const url = 'https://www.reddit.com';
+const url = 'https://www.google.com';
 
 puppeteer
   .launch()
