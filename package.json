@@ -4,12 +4,15 @@
   "description": "Simple scraper",
   "main": "scraper.js",
   "scripts": {
-    "start":"node scraper.js",
+    "start": "node scraper.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "puppeteer":"15.4.0",
-    "cheerio":"1.0.0-rc.12"
+    "cheerio": "^1.0.0-rc.12",
+    "express": "^4.18.1",
+    "node-fetch": "^3.2.8",
+    "nodemon": "^2.0.19"
   },
   "author": "YOSS",
   "license": "ISC"
