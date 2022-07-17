@@ -18,7 +18,7 @@ async function getWallpapers (url) {
   await page.goto(url)
 
   //List of all Extracted Wallpapers
-  let allWallpapers = []
+  var allWallpapers = []
 
   //Scraping Data
   await page.evaluate(()=>{
