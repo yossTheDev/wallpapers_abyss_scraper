@@ -14,4 +14,7 @@ function f()
 //var t = new testObject("fdsfds");
 
 f();
+
+//getWallpapers('https://mobile.alphacoders.com/by-category/32')
+
 //console.log(t.name);

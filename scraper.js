@@ -8,16 +8,17 @@ function Wallpaper (id,wallpaperName,link) {
   this.link = link;
 }
 
-async function getWall () {
+//Get All Wallpapers of a Page
+async function getWallpaper (url) {
   //Config Puppeteer Browser
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({headless:true,args:['--no-sandbox']});
   const page = await browser.newPage();
 
   //Go to Page
-  await page.goto('http://localhost/wallpapersCollection.html')
+  await page.goto(url)
 
   //Await for load all images
-  await page.waitForSelector('img').then(()=> console.log("YA SE ENCONTRO"));
+  await page.waitForSelector('img').then(()=> console.log("LOADING..."));
 
   //Get Body html to scrap
   const bodyHandle = await page.$('body');
@@ -49,69 +50,51 @@ async function getWall () {
   
 };
 
-//Get All Wallpepers in provided url
-async function getWallpapers (url) {
-
-  //Initialize Puppeteer Brwoser
-  const browser = await puppeteer.launch({headless:false, args:['--no-sandbox']});
+async function getWallpaperImg(url){
+  //Config Puppeteer Browser
+  const browser = await puppeteer.launch({headless:true,args:['--no-sandbox']});
   const page = await browser.newPage();
-
-  //Go to the url
+ 
+  //Go to Page
   await page.goto(url)
 
-  console.log("Empezando")
-
-  await page.waitForSelector('.large-12 columns')
-
-  console.log(document.querySelector('.large-12 columns'))
-
-  //Scraping Data
-  await page.evaluate(()=>{
-
-    console.log("Evaluando")
-    var a = document.querySelector('.large-12 columns');
+  //Await for load all images
+  await page.waitForSelector('img').then(()=> console.log("LOADING..."));
 
 
-    return console.log(a);
+  //Get Body html to scrap
+  const bodyHandle = await page.$('body');
+  const html = await page.evaluate(body => body.innerHTML, bodyHandle);
 
-    //List of all Extracted Wallpapers
-    let allWallpapers = []
+  //Now load html data in cheerio
+  const $ = cheerio.load(html);
 
-    let wallpapers = document.querySelectorAll('.thumb-element')
-    console.log(wallpapers[1]);
+  //The result url
+  let wallpaperUrl;
 
-    wallpapers.forEach(element => {
-      //Get wallpaper elements
-      let wallpaperItem = new wallpaper(
-        id = element.getAttribute('id'),
-        link = element.children[0].getAttribute('href'),
-        wallpaperName = element.children[0].children[0].getAttribute('title')
-      )
+  //Extract all img and t the download link
+  $('img').map((i,el)=>{
+    //console.log(el);
 
-      console.log(wallpaperItem.id);
-
-      //Add to wallpaper list
-      allWallpapers.push(wallpaperItem);
-      
-    });
-
-    //Return wallpapers list
-    return allWallpapers;
+    if(el.attribs['class'] === 'img-full-size')
+    wallpaperUrl = el.attribs['src'];
   })
 
+  //Close the Browser  
+  await browser.close();
+
+  return wallpaperUrl;
 }
 
-//getWallpapers('https://mobile.alphacoders.com/by-category/32')
-
-//getWallpapers('http://localhost/dashboard/')
 
 async function start () {
-  var a = await getWall();
+  //var a = await getWallpaper('http://localhost/wallpapersCollection.html');
+  var a = await getWallpaperImg('http://localhost/wallpaperPage.html');
+
   console.log(a);
 }
 
 start();
 
-//console.log(getWallpapers('https://mobile.alphacoders.com/by-category/32'));
 
-module.exports = getWallpapers
+module.exports = getWallpaper
