@@ -43,6 +43,6 @@ async function getWallpapers (url) {
   })
 }
 
-console.log(getWallpapers('https://mobile.alphacoders.com/by-category/32'));
+//console.log(getWallpapers('https://mobile.alphacoders.com/by-category/32'));
 
 module.exports = getWallpapers
