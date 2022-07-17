@@ -11,7 +11,7 @@ app.use(express.urlencoded({extended:false}));
 app.use(express.json());
 
 app.get('/', function (req, res) {
-  res.send(getWallpapers())
+  res.send(getWallpapers('https://mobile.alphacoders.com/by-category/32'))
 })
 
 //Initializing server and listening port
