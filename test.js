@@ -2,6 +2,16 @@ function testObject(name) {
     this.name = name
 }
 
-var t = new testObject("fdsfds");
+function f()
+{
+    let r = []
 
-console.log(t.name);
+    r.push("gfgfd")
+
+    console.log(r.length)
+}
+
+//var t = new testObject("fdsfds");
+
+f();
+//console.log(t.name);

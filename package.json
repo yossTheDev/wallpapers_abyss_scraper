@@ -8,11 +8,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "puppeteer":"15.4.0",
     "cheerio": "^1.0.0-rc.12",
     "express": "^4.18.1",
     "node-fetch": "^3.2.8",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "puppeteer": "^15.4.0"
   },
   "author": "YOSS",
   "license": "ISC"
