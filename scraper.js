@@ -17,11 +17,12 @@ async function getWallpapers (url) {
   //Go to the url
   await page.goto(url)
 
-  //List of all Extracted Wallpapers
-  var allWallpapers = []
-
   //Scraping Data
   await page.evaluate(()=>{
+
+    //List of all Extracted Wallpapers
+    let allWallpapers = []
+
     let wallpapers = document.querySelectorAll('.thumb-element')
 
     wallpapers.forEach(element => {
@@ -43,3 +44,5 @@ async function getWallpapers (url) {
 }
 
 console.log(getWallpapers('https://mobile.alphacoders.com/by-category/32'));
+
+module.exports = getWallpapers
