@@ -1,12 +1,19 @@
 const cheerio = require("cheerio");
 const puppeteer = require('puppeteer');
 
+
+//TODO Convert project to TypeScript
+//TODO Set Category Enum
+//TODO Get Random Wallpapes by Category
+
+
 //Wallpaper Object
 function Wallpaper (id,wallpaperName,link) {
   this.id = id;
   this.wallpaperName = wallpaperName
   this.link = link;
 }
+
 
 //Get All Wallpapers of a Page
 async function getWallpaper (url) {
@@ -18,7 +25,7 @@ async function getWallpaper (url) {
   await page.goto(url)
 
   //Await for load all images
-  await page.waitForSelector('img').then(()=> console.log("LOADING..."));
+  await page.waitForSelector('div .item');
 
   //Get Body html to scrap
   const bodyHandle = await page.$('body');
@@ -31,7 +38,7 @@ async function getWallpaper (url) {
   let wallpaperList = [];
 
   //Get all wallpapers => Note: In wallpapers abyss, wallpapers is a div with .thumb-element class
-  $('div .thumb-element').map((i,el)=>{
+  $('div .item').map((i,el)=>{
 
      let wallpaper = new Wallpaper(
       el.attribs['id'], //ID Ej:wallpaper_934952
@@ -50,6 +57,7 @@ async function getWallpaper (url) {
   
 };
 
+//Get Wallpaper Download Link
 async function getWallpaperImg(url){
   //Config Puppeteer Browser
   const browser = await puppeteer.launch({headless:true,args:['--no-sandbox']});
@@ -59,7 +67,8 @@ async function getWallpaperImg(url){
   await page.goto(url)
 
   //Await for load all images
-  await page.waitForSelector('img').then(()=> console.log("LOADING..."));
+  //await page.waitForTimeout(4000);
+  await page.waitForSelector('img .img-full-size')
 
 
   //Get Body html to scrap
@@ -68,6 +77,8 @@ async function getWallpaperImg(url){
 
   //Now load html data in cheerio
   const $ = cheerio.load(html);
+
+  console.log(html);
 
   //The result url
   let wallpaperUrl;
@@ -87,14 +98,4 @@ async function getWallpaperImg(url){
 }
 
 
-async function start () {
-  //var a = await getWallpaper('http://localhost/wallpapersCollection.html');
-  var a = await getWallpaperImg('http://localhost/wallpaperPage.html');
-
-  console.log(a);
-}
-
-start();
-
-
-module.exports = getWallpaper
+module.exports = getWallpaper, getWallpaperImg

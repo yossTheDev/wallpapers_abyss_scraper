@@ -1,5 +1,4 @@
 const express = require('express');
-const getWallpapers = require('./scraper');
 const app = express()
 
 //Configs
@@ -9,9 +8,10 @@ app.set("json spaces",2);
 //Middleware
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
+app.use(require(`./routes/getWallpaper`));
 
 app.get('/', function (req, res) {
-  res.send(getWallpapers('https://mobile.alphacoders.com/by-category/32'))
+  res.send('<h1>HOLA</h1>')
 })
 
 //Initializing server and listening port

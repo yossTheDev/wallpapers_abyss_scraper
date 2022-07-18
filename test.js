@@ -1,20 +1,14 @@
-function testObject(name) {
-    this.name = name
-}
+const getWallpaperImg = require('./scraper');
 
-function f()
-{
-    let r = []
-
-    r.push("gfgfd")
-
-    console.log(r.length)
-}
-
-//var t = new testObject("fdsfds");
-
-f();
-
-//getWallpapers('https://mobile.alphacoders.com/by-category/32')
-
-//console.log(t.name);
+async function start () {
+    //var a = await getWallpaper('http://localhost/wallpapersCollection.html');
+    //var a = await getWallpaperImg('http://localhost/wallpaperPage.html');
+  
+    //var a = await getWallpaper('https://mobile.alphacoders.com/by-category/32?page=2');
+    var a = await getWallpaperImg('https://mobile.alphacoders.com/wallpapers/view/976057/TV-Show-Moon-Knight-Phone-Wallpaper')
+  
+    console.log(a);
+  }
+  
+  start();
+  
