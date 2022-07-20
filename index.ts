@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from 'express';
-import getWallpaper from './services/scraper'
+import getWallpaper from './services/scraper';
 
 const app: Express = express();
 const port = process.env.PORT || 4000;
