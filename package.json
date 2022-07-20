@@ -1,8 +1,8 @@
 {
   "name": "wallpaper-scraper",
   "version": "1.0.0",
-  "description": "Simple scraper",
-  "main": "scraper.js",
+  "description": "Simple scraper for Wallpaper Abyss and Mobile Abyss Pages",
+  "main": "index.js",
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/index.js",
@@ -10,9 +10,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "cheerio": "^1.0.0-rc.12",
     "express": "^4.18.1",
-    "node-fetch": "^3.2.8",
     "nodemon": "^2.0.19",
     "puppeteer": "^15.4.0"
   },
