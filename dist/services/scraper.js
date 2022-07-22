@@ -101,15 +101,23 @@ let Scraper = {
     //Get Random Wallpaper based in the category
     getRandomWallpaper(resolution, categories) {
         return __awaiter(this, void 0, void 0, function* () {
-            //Get All wallpapers in the defined category page
-            let wallpapers = yield this.getWallpaper(makeLink(resolution, categories) + `?page=${randomNumber(0, 100)}`);
+            let wallpapers = [];
+            if (resolution === Resolution.Desktop) {
+                //Get All wallpapers in the defined category page
+                wallpapers = yield this.getDesktopWallpaper(makeLink(resolution, categories) + `?page=${randomNumber(0, 100)}`);
+            }
+            else {
+                //Get All wallpapers in the defined category page
+                wallpapers = yield this.getMobileWallpaper(makeLink(resolution, categories) + `?page=${randomNumber(0, 100)}`);
+            }
             //Return Random Wallpaper
             return wallpapers[randomNumber(0, wallpapers.length)];
         });
     },
-    //Get All Wallpapers of a Page
-    getWallpaper(url) {
+    //Get All Mobile Wallpapers of a Page
+    getMobileWallpaper(url) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log(url);
             //Config Puppeteer Browser
             const browser = yield puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
             const page = yield browser.newPage();
@@ -129,7 +137,7 @@ let Scraper = {
                 let wallpaper = {
                     id: el.attribs['id'],
                     wallpaperName: ((el.childNodes[1]).childNodes[1]).attribs['title'],
-                    link: (el.childNodes[1]).attribs['href']
+                    link: 'mobile.alphacoders.com' + (el.childNodes[1]).attribs['href']
                 };
                 //console.log(wallpaper);
                 //Add to the list
@@ -140,7 +148,42 @@ let Scraper = {
             return wallpaperList;
         });
     },
-    //Get Wallpaper Download Link
+    //Get All Desktop Wallpapers of a Page
+    getDesktopWallpaper(url) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(url);
+            //Config Puppeteer Browser
+            const browser = yield puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+            const page = yield browser.newPage();
+            //Go to Page
+            yield page.goto(url);
+            //Await for load all images
+            yield page.waitForSelector('div .thumb-container');
+            //Get Body html to scrap
+            const bodyHandle = yield page.$('body');
+            const html = yield page.evaluate(body => body.innerHTML, bodyHandle);
+            //Now load html data in cheerio
+            const $ = cheerio.load(html);
+            //Define the list with all wallpapers
+            let wallpaperList = new Array();
+            //Get all wallpapers => Note: In wallpapers abyss, wallpapers is a div with .thumb-element class
+            $('div .thumb-container').map((i, el) => {
+                let wallpaper = {
+                    id: Math.random().toString(),
+                    wallpaperName: el.childNodes[1].childNodes[1].attribs['title'],
+                    link: 'wall.alphacoders.com' + el.childNodes[1].childNodes[1].attribs['href']
+                };
+                //console.log(wallpaper);
+                //Add to the list
+                wallpaperList.push(wallpaper);
+            });
+            //Close the Browser  
+            yield browser.close();
+            console.log(wallpaperList);
+            return wallpaperList;
+        });
+    },
+    //Get Wallpaper Download => Link Unused Puppeteer Version
     getWallpaperImg(url) {
         return __awaiter(this, void 0, void 0, function* () {
             //Config Puppeteer Browser
