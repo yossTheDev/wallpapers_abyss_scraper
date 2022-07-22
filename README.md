@@ -1,6 +1,6 @@
 # Wallpaper Scraper
 
-Simple and usefull scraper for Wallpaper Abyss and Mobile Abyss pages. I use Puppeteer and cheerio to load and parse data respectively. I also includes full funtional API. Writted in TypeScript
+Simple and usefull scraper for Wallpaper Abyss and Mobile Abyss pages. I use ``Puppeteer`` and ``cheerio`` to load and parse data respectively. I also includes full funtional API. Writted in TypeScript
 
 ## 💡 How To Use
 
@@ -8,13 +8,13 @@ Simple and usefull scraper for Wallpaper Abyss and Mobile Abyss pages. I use Pup
 
 Get Random Wallpaper for the defined resolution and category
 
-Example Request
+``Example Request``
 
 ``` http
 .../api/getWallpaper?category=2&resolution=mobile
 ```
 
-Example Response
+``Example Response``
 
 ```json
 
@@ -30,13 +30,13 @@ Example Response
 
 Get download link for the provided url (Mobile Abyss or Wallpaper Abyss)
 
-Example Request
+``Example Request``
 
 ``` code
 .../api/getwallpaperLink?url=wall.alphacoders.com/big.php?i=20658
 ```
 
-Example Response
+``Example Response``
 
 ``` json
 
