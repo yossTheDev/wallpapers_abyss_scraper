@@ -91,7 +91,9 @@ enum Categories
 
 ## 📝📌 TO DO
 
-Add other sources to download wallpapers
+-Add other sources to download wallpapers
+
+-Get Random Wallpaper without category
 
 CODED BY YOSS THE DEV
 
