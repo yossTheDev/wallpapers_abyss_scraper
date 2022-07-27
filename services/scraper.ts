@@ -53,7 +53,7 @@ enum Categories{
 }
 //#endregion
 
-//#region  Handy Tools
+//#region  Utility Tools
 
 //Inclusive min exlusive max
 function randomNumber(max: number, min:number): number{
@@ -74,7 +74,12 @@ function makeLink(resolution : Resolution, categories: string): string{
 
 //#region Functions
 
-//Get Random Wallpaper based in the category
+/**
+ * Get random wallpaper for the defined Resolution and Category
+ *
+ * @param {Resolution} resolution Wallpaper Resolution, Mobile or Desktop
+ * @param {string} categories Category Code see Readme.md for all category codes
+ */
 export async function getRandomWallpaper(resolution : Resolution, categories: string): Promise<Wallpaper>{
     let wallpaper: Wallpaper
 
@@ -88,7 +93,7 @@ export async function getRandomWallpaper(resolution : Resolution, categories: st
         wallpaper = wallpapers[randomNumber(0,wallpapers.length)];
         
         //Get Wallpaper Donwload Link
-        let link = await getWallpaperDesktopLink(wallpaper.link);
+        let link = await getDesktopWallpaperDLink(wallpaper.link);
 
         //Set Link
         wallpaper.link = link;
@@ -100,7 +105,7 @@ export async function getRandomWallpaper(resolution : Resolution, categories: st
         wallpaper = wallpapers[randomNumber(0,wallpapers.length)];
         
         //Get Wallpaper Donwload Link
-        let link = await getWallpaperMobileLink(wallpaper.link);
+        let link = await getMobileWallpaperDLink(wallpaper.link);
 
         //Set Link
         wallpaper.link = link;
@@ -111,7 +116,12 @@ export async function getRandomWallpaper(resolution : Resolution, categories: st
     return wallpaper
 }
 
-//Get Random Wallpaper Collection
+/**
+ * Get a collection of random wallpaper
+ *
+ * @param {Resolution} resolution Wallpaper Resolution, Mobile or Desktop
+ * @param {string} categories Category Code see Readme.md for all category codes
+ */
 export async function getRandomWallpaperCollection(resolution : Resolution, categories: string): Promise<Wallpaper[]>{
     let wallpapers: Wallpaper[];
 
@@ -130,7 +140,11 @@ export async function getRandomWallpaperCollection(resolution : Resolution, cate
     return wallpapers;
 }
   
-//Get All Mobile Wallpapers of a Page
+/**
+ * Get wallpapers from https://mobile.alphacoders.com
+ *
+ * @param {string} url
+ */
 export async function getMobileWallpaper (url : string): Promise<Wallpaper[]> {
     console.log(url);
 
@@ -178,7 +192,11 @@ export async function getMobileWallpaper (url : string): Promise<Wallpaper[]> {
     
 }
 
-//Get All Desktop Wallpapers of a Page
+/**
+ * Get wallpapers from https://wall.alphacoders.com/
+ *
+ * @param {string} url
+ */
 export async function getDesktopWallpaper (url : string): Promise<Wallpaper[]> {
     console.log(url);
 
@@ -228,8 +246,12 @@ export async function getDesktopWallpaper (url : string): Promise<Wallpaper[]> {
     
 }
   
-//Get Wallpaper Download Link For Desktop Resolution
-export async function getWallpaperDesktopLink(url : string): Promise<string>{
+/**
+ * Get donwload link from https://wall.alphacoders.com/ wallpapers
+ *
+ * @param {string} url
+ */
+export async function getDesktopWallpaperDLink(url : string): Promise<string>{
     //Config Puppeteer Browser
     const browser = await puppeteer.launch({headless:true,args:['--no-sandbox']});
     const page = await browser.newPage();
@@ -268,8 +290,12 @@ export async function getWallpaperDesktopLink(url : string): Promise<string>{
     return wallpaperUrl;
 }
 
-//Get Wallpaper Download Link For Mobile Resolution
-export async function getWallpaperMobileLink(url: string): Promise<string>{
+/**
+ * Get donwload link from https://mobile.alphacoders.com wallpapers
+ *
+ * @param {string} url
+ */
+export async function getMobileWallpaperDLink(url: string): Promise<string>{
     //Load url and get response
     const resp = await axios.get(url)
 

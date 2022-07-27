@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from 'express';
-import { getRandomWallpaper, getRandomWallpaperCollection, getWallpaperDesktopLink, getWallpaperMobileLink, Resolution } from './services/scraper';
+import { getRandomWallpaper, getRandomWallpaperCollection, getDesktopWallpaperDLink, getMobileWallpaperDLink, Resolution } from './services/scraper';
 import url from 'url'
 
 //#region configuration
@@ -109,10 +109,10 @@ app.get("/api/getWallpaperLink/",async (req, res) => {
   if(link && resol){
     if(resol === 'desktop'){
       //Get Wallpaper for Desktop Resolution
-      res.status(200).json(await getWallpaperDesktopLink('https://' + (link as unknown)as string))
+      res.status(200).json(await getDesktopWallpaperDLink('https://' + (link as unknown)as string))
     }else{
       //Get Wallpaper for Mobile Resolution
-      res.status(200).json(await getWallpaperMobileLink('https://' + (link as unknown)as string))
+      res.status(200).json(await getMobileWallpaperDLink('https://' + (link as unknown)as string))
     }
 
   }else{
