@@ -4,7 +4,15 @@ Simple and usefull scraper for Wallpaper Abyss and Mobile Abyss pages. I use ``P
 
 ## 💡 How To Use
 
-## Get Random Wallpaper
+### Endpoints
+
+``Get Random Wallpaper``
+
+``Get Random Wallpaper Collection``
+
+``Get Wallpaper Download Link``
+
+### Get Random Wallpaper
 
 Get Random Wallpaper for the defined resolution and category
 
@@ -26,7 +34,34 @@ Get Random Wallpaper for the defined resolution and category
 
 ```
 
-## Get Wallpaper Download Link
+### Get Random Wallpaper Collection
+
+``Example Request``
+
+``` http
+.../api/getRandomWallpaperCollection?category=2&resolution=mobile
+```
+
+``Example Response``
+
+```json
+
+{
+  "id": "wallpaper_938159",
+  "wallpaperName": "Animal Cat & Dog Phone Wallpaper",
+  "link": "mobile.alphacoders.com/wallpapers/view/938159/Animal-Cat-%26-Dog-Phone-Wallpaper"
+}
+
+{
+  "id": "wallpaper_939150",
+  "wallpaperName": "Animal Cat & Dog Phone Wallpaper",
+  "link": "mobile.alphacoders.com/wallpapers/view/938159/Animal-Cat-%26-Dog-Phone-Wallpaper"
+}
+
+{...}
+```
+
+### Get Wallpaper Download Link
 
 Get download link for the provided url (Mobile Abyss or Wallpaper Abyss)
 
@@ -91,10 +126,10 @@ enum Categories
 
 ## 📝📌 TO DO
 
--Add other sources to download wallpapers
-
 -Get Random Wallpaper without category
 
-CODED BY YOSS THE DEV
+-Get Wallpapers by Subcategory
+
+ ©️ Made by Yoss The Dev ©️
 
 ✌️ CODE 4EVER ✌️

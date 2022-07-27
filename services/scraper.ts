@@ -4,7 +4,7 @@ import axios from 'axios'
 
 //#region Enums and Interfaces
 //Wallpaper Object
-interface Wallpaper{
+export interface Wallpaper{
     id:string,
     wallpaperName: string,
     link: string
@@ -12,7 +12,7 @@ interface Wallpaper{
 }
 
 //Resolution Mobile or Desktop
-enum Resolution{
+export enum Resolution{
     Mobile = 'Mobile',
     Desktop = 'Desktop'
 }
@@ -53,6 +53,7 @@ enum Categories{
 //#endregion
 
 //#region  Handy Tools
+
 //Inclusive min exlusive max
 function randomNumber(max: number, min:number): number{
     return Math.floor(Math.random() * (max - min)) + min
@@ -67,190 +68,214 @@ function makeLink(resolution : Resolution, categories: string): string{
         return `https://wall.alphacoders.com/by_category.php?id=${categories}`
     }
 };
+
 //#endregion
+
+
+//#region Functions
 
 //Scraper Object
 let Scraper = {
    
-    //Get Random Wallpaper based in the category
-    async getRandomWallpaper(resolution : Resolution, categories: string){
-        let wallpapers: string | any[] = []
 
-
-        if(resolution === Resolution.Desktop){
-
-            //Get All wallpapers in the defined category page
-            wallpapers = await this.getDesktopWallpaper(makeLink(resolution,categories) + `?page=${randomNumber(0,100)}`)
-        }else{
-            //Get All wallpapers in the defined category page
-            wallpapers = await this.getMobileWallpaper(makeLink(resolution,categories) + `?page=${randomNumber(0,100)}`)
-        }
-        
-
-        //Return Random Wallpaper
-        return wallpapers[randomNumber(0,wallpapers.length)]
-    },
-      
-    //Get All Mobile Wallpapers of a Page
-    async getMobileWallpaper (url : string): Promise<Wallpaper[]> {
-        console.log(url);
-
-        //Config Puppeteer Browser
-        const browser = await puppeteer.launch({headless:true,args:['--no-sandbox']});
-        const page = await browser.newPage();
-      
-        //Go to Page
-        await page.goto(url)
-      
-        //Await for load all images
-        await page.waitForSelector('div .item');
-      
-        //Get Body html to scrap
-        const bodyHandle = await page.$('body');
-        const html = await page.evaluate(body => body.innerHTML, bodyHandle);
-      
-        //Now load html data in cheerio
-        const $ = cheerio.load(html);
-      
-        //Define the list with all wallpapers
-        let wallpaperList : Wallpaper[] = new Array();
-      
-        //Get all wallpapers => Note: In wallpapers abyss, wallpapers is a div with .thumb-element class
-        $('div .item').map((i,el)=>{
-    
-            let wallpaper: Wallpaper =
-            {
-                id : el.attribs['id'],
-                wallpaperName: ((((el.childNodes[1]) as unknown as cheerio.Element).childNodes[1]) as unknown as cheerio.Element).attribs['title'],
-                link: 'mobile.alphacoders.com' + ((el.childNodes[1]) as unknown as cheerio.Element).attribs['href']
-            };   
-      
-           //console.log(wallpaper);
-    
-           //Add to the list
-           wallpaperList.push(wallpaper);
-          });
-      
-        //Close the Browser  
-        await browser.close();
-      
-        return wallpaperList;
-        
-    },
-
-    //Get All Desktop Wallpapers of a Page
-    async getDesktopWallpaper (url : string): Promise<Wallpaper[]> {
-        console.log(url);
-
-        //Config Puppeteer Browser
-        const browser = await puppeteer.launch({headless:true,args:['--no-sandbox']});
-        const page = await browser.newPage();
-      
-        //Go to Page
-        await page.goto(url)
-      
-        //Await for load all images
-        await page.waitForSelector('div .thumb-container');
-      
-        //Get Body html to scrap
-        const bodyHandle = await page.$('body');
-        const html = await page.evaluate(body => body.innerHTML, bodyHandle);
-      
-        //Now load html data in cheerio
-        const $ = cheerio.load(html);
-      
-        //Define the list with all wallpapers
-        let wallpaperList : Wallpaper[] = new Array();
-      
-        //Get all wallpapers => Note: In wallpapers abyss, wallpapers is a div with .thumb-element class
-        $('div .thumb-container').map((i,el)=>{
-
-            let wallpaper: Wallpaper=
-            {
-                id : Math.random().toString(), //ToDo Get the Real Wallpaper ID
-                wallpaperName: ((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).attribs['title'],
-                link: 'wall.alphacoders.com' +  ((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).attribs['href']
-            }
-      
-           //console.log(wallpaper);
-    
-           //Add to the list
-           wallpaperList.push(wallpaper);
-          });
-      
-        //Close the Browser  
-        await browser.close();
-
-        console.log(wallpaperList);
-      
-        return wallpaperList;
-        
-    },
-      
-    //Get Wallpaper Download => Link Unused Puppeteer Version
-    async  getWallpaperImg(url : string){
-        //Config Puppeteer Browser
-        const browser = await puppeteer.launch({headless:true,args:['--no-sandbox']});
-        const page = await browser.newPage();
-       
-        //Go to Page
-        await page.goto(url)
-      
-        //Await for load all images
-        //await page.waitForTimeout(4000);
-        await page.waitForSelector('img .img-full-size')
-      
-      
-        //Get Body html to scrap
-        const bodyHandle = await page.$('body');
-        const html = await page.evaluate(body => body.innerHTML, bodyHandle);
-      
-        //Now load html data in cheerio
-        const $ = cheerio.load(html);
-      
-        console.log(html);
-      
-        //The result url
-        let wallpaperUrl;
-      
-        //Extract all img and t the download link
-        $('img').map((i,el)=>{
-          //console.log(el);
-      
-          if(el.attribs['class'] === 'img-full-size')
-          wallpaperUrl = el.attribs['src'];
-        })
-      
-        //Close the Browser  
-        await browser.close();
-      
-        return wallpaperUrl;
-    },
-
-    //Get Download Link
-    async getWallpaperLink(url: string): Promise<string>{
-        //Load url and get response
-        const resp = await axios.get(url)
-
-        //Now load html data in cheerio
-        const $ = cheerio.load(resp.data);
-
-        //The result url
-        let wallpaperUrl : string;
-      
-        //Extract all img and get the the download link
-        $('img').map((i,el)=>{
-          //console.log(el);
-      
-          if(el.attribs['class'] === 'img-full-size')
-          wallpaperUrl = el.attribs['src'];
-        })
-
-        //Retur Donload Link
-        return wallpaperUrl;
-    }
     
 };
 
+//Get Random Wallpaper based in the category
+export async function getRandomWallpaper(resolution : Resolution, categories: string): Promise<Wallpaper>{
+    let wallpapers: Wallpaper[]
 
-export default {Scraper, Resolution, Categories}
+
+    if(resolution === Resolution.Desktop){
+
+        //Get All wallpapers in the defined category page
+        wallpapers = await getDesktopWallpaper(makeLink(resolution,categories) + `?page=${randomNumber(0,100)}`)
+    }else{
+        //Get All wallpapers in the defined category page
+        wallpapers = await getMobileWallpaper(makeLink(resolution,categories) + `?page=${randomNumber(0,100)}`)
+    }
+    
+
+    //Return Random Wallpaper
+    return wallpapers[randomNumber(0,wallpapers.length)]
+}
+
+//Get Random Wallpaper Collection
+export async function getRandomWallpaperCollection(resolution : Resolution, categories: string): Promise<Wallpaper[]>{
+    let wallpapers: Wallpaper[];
+
+
+    if(resolution === Resolution.Desktop){
+
+        //Get All wallpapers in the defined category page
+        wallpapers = await getDesktopWallpaper(makeLink(resolution,categories) + `?page=${randomNumber(0,100)}`)
+    }else{
+        //Get All wallpapers in the defined category page
+        wallpapers = await getMobileWallpaper(makeLink(resolution,categories) + `?page=${randomNumber(0,100)}`)
+    }
+    
+
+    //Return Random Wallpaper
+    return wallpapers;
+}
+  
+//Get All Mobile Wallpapers of a Page
+export async function getMobileWallpaper (url : string): Promise<Wallpaper[]> {
+    console.log(url);
+
+    //Config Puppeteer Browser
+    const browser = await puppeteer.launch({headless:true,args:['--no-sandbox']});
+    const page = await browser.newPage();
+  
+    //Go to Page
+    await page.goto(url)
+  
+    //Await for load all images
+    await page.waitForSelector('div .item');
+  
+    //Get Body html to scrap
+    const bodyHandle = await page.$('body');
+    const html = await page.evaluate(body => body.innerHTML, bodyHandle);
+  
+    //Now load html data in cheerio
+    const $ = cheerio.load(html);
+  
+    //Define the list with all wallpapers
+    let wallpaperList : Wallpaper[] = new Array();
+  
+    //Get all wallpapers => Note: In wallpapers abyss, wallpapers is a div with .thumb-element class
+    $('div .item').map((i,el)=>{
+
+        let wallpaper: Wallpaper =
+        {
+            id : el.attribs['id'],
+            wallpaperName: ((((el.childNodes[1]) as unknown as cheerio.Element).childNodes[1]) as unknown as cheerio.Element).attribs['title'],
+            link: 'mobile.alphacoders.com' + ((el.childNodes[1]) as unknown as cheerio.Element).attribs['href']
+        };   
+  
+       //console.log(wallpaper);
+
+       //Add to the list
+       wallpaperList.push(wallpaper);
+      });
+  
+    //Close the Browser  
+    await browser.close();
+  
+    return wallpaperList;
+    
+}
+
+//Get All Desktop Wallpapers of a Page
+export async function getDesktopWallpaper (url : string): Promise<Wallpaper[]> {
+    console.log(url);
+
+    //Config Puppeteer Browser
+    const browser = await puppeteer.launch({headless:true,args:['--no-sandbox']});
+    const page = await browser.newPage();
+  
+    //Go to Page
+    await page.goto(url)
+  
+    //Await for load all images
+    await page.waitForSelector('div .thumb-container');
+  
+    //Get Body html to scrap
+    const bodyHandle = await page.$('body');
+    const html = await page.evaluate(body => body.innerHTML, bodyHandle);
+  
+    //Now load html data in cheerio
+    const $ = cheerio.load(html);
+  
+    //Define the list with all wallpapers
+    let wallpaperList : Wallpaper[] = new Array();
+  
+    //Get all wallpapers => Note: In wallpapers abyss, wallpapers is a div with .thumb-element class
+    $('div .thumb-container').map((i,el)=>{
+
+        let wallpaper: Wallpaper=
+        {
+            id : Math.random().toString(), //ToDo Get the Real Wallpaper ID
+            wallpaperName: ((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).attribs['title'],
+            link: 'wall.alphacoders.com' +  ((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).attribs['href']
+        }
+  
+       //console.log(wallpaper);
+
+       //Add to the list
+       wallpaperList.push(wallpaper);
+      });
+  
+    //Close the Browser  
+    await browser.close();
+
+    console.log(wallpaperList);
+  
+    return wallpaperList;
+    
+}
+  
+//Get Wallpaper Download => Link Unused Puppeteer Version
+async function getWallpaperImg(url : string){
+    //Config Puppeteer Browser
+    const browser = await puppeteer.launch({headless:true,args:['--no-sandbox']});
+    const page = await browser.newPage();
+   
+    //Go to Page
+    await page.goto(url)
+  
+    //Await for load all images
+    //await page.waitForTimeout(4000);
+    await page.waitForSelector('img .img-full-size')
+  
+  
+    //Get Body html to scrap
+    const bodyHandle = await page.$('body');
+    const html = await page.evaluate(body => body.innerHTML, bodyHandle);
+  
+    //Now load html data in cheerio
+    const $ = cheerio.load(html);
+  
+    console.log(html);
+  
+    //The result url
+    let wallpaperUrl;
+  
+    //Extract all img and t the download link
+    $('img').map((i,el)=>{
+      //console.log(el);
+  
+      if(el.attribs['class'] === 'img-full-size')
+      wallpaperUrl = el.attribs['src'];
+    })
+  
+    //Close the Browser  
+    await browser.close();
+  
+    return wallpaperUrl;
+}
+
+//Get Download Link
+export async function getWallpaperLink(url: string): Promise<string>{
+    //Load url and get response
+    const resp = await axios.get(url)
+
+    //Now load html data in cheerio
+    const $ = cheerio.load(resp.data);
+
+    //The result url
+    let wallpaperUrl : string;
+  
+    //Extract all img and get the the download link
+    $('img').map((i,el)=>{
+      //console.log(el);
+  
+      if(el.attribs['class'] === 'img-full-size')
+      wallpaperUrl = el.attribs['src'];
+    })
+
+    //Retur Donload Link
+    return wallpaperUrl;
+}
+
+//#endregion

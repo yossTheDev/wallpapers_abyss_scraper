@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from 'express';
-import scraper from './services/scraper';
+import { getRandomWallpaper, getRandomWallpaperCollection, getWallpaperLink, Resolution } from './services/scraper';
 import url from 'url'
 
 //#region configuration
@@ -19,12 +19,12 @@ app.use(express.json());
 
 //#region Routes
 app.get('/', (req: Request, res: Response) => {
-  res.send('Express + TypeScript Server');
+  res.send('Wallpaper Abyss Scraper is running...');
 });
 
 //Ger Random Wallpaper parameters => category(see the readme for all category codes) , resolution (mobile or desktop)
 //Example request .../api/getWallpaper?category=1&resolution=mobile
-app.get("/api/getWallpaper",async (req, res) => {
+app.get("/api/getRandomWallpaper",async (req, res) => {
 
   //Get Category and Resolution Parameter => Category is a numer and resolution can be Mobile Or Desktop
   const category = url.parse(req.url,true).query["category"];
@@ -32,22 +32,59 @@ app.get("/api/getWallpaper",async (req, res) => {
 
   if(category && resol){
     //Set Resolution
-     let resolution = scraper.Resolution.Desktop;
+     let resolution = Resolution.Desktop;
 
     if(resol === 'desktop'){
-      resolution = scraper.Resolution.Desktop
+      resolution = Resolution.Desktop
     }else{
-      resolution = scraper.Resolution.Mobile
+      resolution = Resolution.Mobile
     }
 
-    //Get Random Wallpaper for the defined category and resolutions
-    //scraper.Scraper.getRandomWallpaper(resolution,category)
+    //Try to get Wallpapers
+    try{
+      let wallpapers = await getRandomWallpaper(resolution,((category as unknown) as string))
+      getRandomWallpaper
+      res.status(200).json(wallpapers);
+    }catch(ex){
+      res.status(403).send('Error processing request')
+    }
+    res.status(200).json()
 
-    //console.log('http://'  + urls);
-    res.status(200).json(await scraper.Scraper.getRandomWallpaper(resolution,((category as unknown) as string)))
-    //res.status(200).json(await scraper.Scraper.getWallpaper('http://localhost/wallpapersCollection.html'))
+  }else{
+    res.status(403).send('Error incorrect parameters!')
+  }
+})
 
-    //res.status(200).send(`The category is ${category} and the resolution is ${resolution} => ${scraper.Categories.Animal}`);
+//TODO
+/*
+Ger Random Wallpaper Collection parameters => category(see the readme for all category codes) , resolution (mobile or desktop)
+Example request .../api/getRandomWallpaperCollection?category=1&resolution=mobile
+*/
+app.get("/api/getRandomWallpaperCollection",async (req, res) => {
+
+  //Get Category and Resolution Parameter => Category is a numer and resolution can be Mobile Or Desktop
+  const category = url.parse(req.url,true).query["category"];
+  const resol = url.parse(req.url,true).query["resolution"];
+
+  if(category && resol){
+    //Set Resolution
+     let resolution = Resolution.Desktop;
+
+    if(resol === 'desktop'){
+      resolution = Resolution.Desktop
+    }else{
+      resolution = Resolution.Mobile
+    }
+
+    //Try to get Wallpapers
+    try{
+      let wallpapers = await getRandomWallpaperCollection(resolution,((category as unknown) as string))
+      res.status(200).json(wallpapers);
+    }catch(ex){
+      res.status(403).send('Error processing request')
+    }
+    res.status(200).json()
+
   }else{
     res.status(403).send('Error incorrect parameters!')
   }
@@ -64,7 +101,7 @@ app.get("/api/getWallpaperLink/",async (req, res) => {
 
   //Verify is provided valid link
   if(link){
-    res.status(200).json(await scraper.Scraper.getWallpaperLink('https://' + (link as unknown)as string))
+    res.status(200).json(await getWallpaperLink('https://' + (link as unknown)as string))
   }else{
     res.status(400).send('Error incorrect parameters!')
   }
