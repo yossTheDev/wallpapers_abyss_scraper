@@ -7,8 +7,9 @@ import axios from 'axios'
 export interface Wallpaper{
     id:string,
     wallpaperName: string,
-    link: string
-
+    link: string,
+    thumb?: string,
+    donwloadLink?: string
 }
 
 //Resolution Mobile or Desktop
@@ -71,33 +72,43 @@ function makeLink(resolution : Resolution, categories: string): string{
 
 //#endregion
 
-
 //#region Functions
-
-//Scraper Object
-let Scraper = {
-   
-
-    
-};
 
 //Get Random Wallpaper based in the category
 export async function getRandomWallpaper(resolution : Resolution, categories: string): Promise<Wallpaper>{
-    let wallpapers: Wallpaper[]
+    let wallpaper: Wallpaper
 
 
     if(resolution === Resolution.Desktop){
 
         //Get All wallpapers in the defined category page
-        wallpapers = await getDesktopWallpaper(makeLink(resolution,categories) + `?page=${randomNumber(0,100)}`)
+        let wallpapers = await getDesktopWallpaper(makeLink(resolution,categories) + `?page=${randomNumber(0,100)}`)
+
+        //Get Random Wallpaper
+        wallpaper = wallpapers[randomNumber(0,wallpapers.length)];
+        
+        //Get Wallpaper Donwload Link
+        let link = await getWallpaperDesktopLink(wallpaper.link);
+
+        //Set Link
+        wallpaper.link = link;
     }else{
         //Get All wallpapers in the defined category page
-        wallpapers = await getMobileWallpaper(makeLink(resolution,categories) + `?page=${randomNumber(0,100)}`)
+        let wallpapers = await getMobileWallpaper(makeLink(resolution,categories) + `?page=${randomNumber(0,100)}`)
+
+        //Get Random Wallpaper
+        wallpaper = wallpapers[randomNumber(0,wallpapers.length)];
+        
+        //Get Wallpaper Donwload Link
+        let link = await getWallpaperMobileLink(wallpaper.link);
+
+        //Set Link
+        wallpaper.link = link;
     }
     
 
     //Return Random Wallpaper
-    return wallpapers[randomNumber(0,wallpapers.length)]
+    return wallpaper
 }
 
 //Get Random Wallpaper Collection
@@ -150,7 +161,8 @@ export async function getMobileWallpaper (url : string): Promise<Wallpaper[]> {
         {
             id : el.attribs['id'],
             wallpaperName: ((((el.childNodes[1]) as unknown as cheerio.Element).childNodes[1]) as unknown as cheerio.Element).attribs['title'],
-            link: 'mobile.alphacoders.com' + ((el.childNodes[1]) as unknown as cheerio.Element).attribs['href']
+            link: 'mobile.alphacoders.com' + ((el.childNodes[1]) as unknown as cheerio.Element).attribs['href'],
+            thumb: ((((el.childNodes[1]) as unknown as cheerio.Element).childNodes[1]) as unknown as cheerio.Element).attribs['src']
         };   
   
        //console.log(wallpaper);
@@ -197,7 +209,8 @@ export async function getDesktopWallpaper (url : string): Promise<Wallpaper[]> {
         {
             id : Math.random().toString(), //ToDo Get the Real Wallpaper ID
             wallpaperName: ((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).attribs['title'],
-            link: 'wall.alphacoders.com' +  ((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).attribs['href']
+            link: 'wall.alphacoders.com' +  ((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).attribs['href'],
+            thumb: (((((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[4]) as unknown as cheerio.Element).attribs['src'],
         }
   
        //console.log(wallpaper);
@@ -215,8 +228,8 @@ export async function getDesktopWallpaper (url : string): Promise<Wallpaper[]> {
     
 }
   
-//Get Wallpaper Download => Link Unused Puppeteer Version
-async function getWallpaperImg(url : string){
+//Get Wallpaper Download Link For Desktop Resolution
+export async function getWallpaperDesktopLink(url : string): Promise<string>{
     //Config Puppeteer Browser
     const browser = await puppeteer.launch({headless:true,args:['--no-sandbox']});
     const page = await browser.newPage();
@@ -226,7 +239,7 @@ async function getWallpaperImg(url : string){
   
     //Await for load all images
     //await page.waitForTimeout(4000);
-    await page.waitForSelector('img .img-full-size')
+    await page.waitForSelector('img')
   
   
     //Get Body html to scrap
@@ -239,13 +252,13 @@ async function getWallpaperImg(url : string){
     console.log(html);
   
     //The result url
-    let wallpaperUrl;
+    let wallpaperUrl : string;
   
     //Extract all img and t the download link
     $('img').map((i,el)=>{
       //console.log(el);
   
-      if(el.attribs['class'] === 'img-full-size')
+      if(el.attribs['class'] === 'img-responsive big-thumb thumb-desktop')
       wallpaperUrl = el.attribs['src'];
     })
   
@@ -255,8 +268,8 @@ async function getWallpaperImg(url : string){
     return wallpaperUrl;
 }
 
-//Get Download Link
-export async function getWallpaperLink(url: string): Promise<string>{
+//Get Wallpaper Download Link For Mobile Resolution
+export async function getWallpaperMobileLink(url: string): Promise<string>{
     //Load url and get response
     const resp = await axios.get(url)
 

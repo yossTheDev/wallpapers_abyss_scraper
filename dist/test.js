@@ -9,11 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const scraper_1 = require("./services/scraper");
 function test() {
     return __awaiter(this, void 0, void 0, function* () {
         //var a = await Scraper.getWallpaperLink('http://localhost/wallpaperPage.html');
         let a = randomNumber(20, 50);
-        console.log(a);
+        let b = yield (0, scraper_1.getWallpaperImg)('https://wall.alphacoders.com/big.php?i=718222');
+        console.log(b);
     });
 }
 //Inclusive min exlusive max

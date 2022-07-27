@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const scraper_1 = __importDefault(require("./services/scraper"));
+const scraper_1 = require("./services/scraper");
 const url_1 = __importDefault(require("url"));
 //#region configuration
 const app = (0, express_1.default)();
@@ -27,29 +27,65 @@ app.use(express_1.default.json());
 //#endregion
 //#region Routes
 app.get('/', (req, res) => {
-    res.send('Express + TypeScript Server');
+    res.send('Wallpaper Abyss Scraper is running...');
 });
 //Ger Random Wallpaper parameters => category(see the readme for all category codes) , resolution (mobile or desktop)
 //Example request .../api/getWallpaper?category=1&resolution=mobile
-app.get("/api/getWallpaper", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/api/getRandomWallpaper", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //Get Category and Resolution Parameter => Category is a numer and resolution can be Mobile Or Desktop
     const category = url_1.default.parse(req.url, true).query["category"];
     const resol = url_1.default.parse(req.url, true).query["resolution"];
     if (category && resol) {
         //Set Resolution
-        let resolution = scraper_1.default.Resolution.Desktop;
+        let resolution = scraper_1.Resolution.Desktop;
         if (resol === 'desktop') {
-            resolution = scraper_1.default.Resolution.Desktop;
+            resolution = scraper_1.Resolution.Desktop;
         }
         else {
-            resolution = scraper_1.default.Resolution.Mobile;
+            resolution = scraper_1.Resolution.Mobile;
         }
-        //Get Random Wallpaper for the defined category and resolutions
-        //scraper.Scraper.getRandomWallpaper(resolution,category)
-        //console.log('http://'  + urls);
-        res.status(200).json(yield scraper_1.default.Scraper.getRandomWallpaper(resolution, category));
-        //res.status(200).json(await scraper.Scraper.getWallpaper('http://localhost/wallpapersCollection.html'))
-        //res.status(200).send(`The category is ${category} and the resolution is ${resolution} => ${scraper.Categories.Animal}`);
+        //Try to get Wallpapers
+        try {
+            let wallpapers = yield (0, scraper_1.getRandomWallpaper)(resolution, category);
+            scraper_1.getRandomWallpaper;
+            res.status(200).json(wallpapers);
+        }
+        catch (ex) {
+            res.status(403).send('Error processing request');
+        }
+        res.status(200).json();
+    }
+    else {
+        res.status(403).send('Error incorrect parameters!');
+    }
+}));
+//TODO
+/*
+Ger Random Wallpaper Collection parameters => category(see the readme for all category codes) , resolution (mobile or desktop)
+Example request .../api/getRandomWallpaperCollection?category=1&resolution=mobile
+*/
+app.get("/api/getRandomWallpaperCollection", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //Get Category and Resolution Parameter => Category is a numer and resolution can be Mobile Or Desktop
+    const category = url_1.default.parse(req.url, true).query["category"];
+    const resol = url_1.default.parse(req.url, true).query["resolution"];
+    if (category && resol) {
+        //Set Resolution
+        let resolution = scraper_1.Resolution.Desktop;
+        if (resol === 'desktop') {
+            resolution = scraper_1.Resolution.Desktop;
+        }
+        else {
+            resolution = scraper_1.Resolution.Mobile;
+        }
+        //Try to get Wallpapers
+        try {
+            let wallpapers = yield (0, scraper_1.getRandomWallpaperCollection)(resolution, category);
+            res.status(200).json(wallpapers);
+        }
+        catch (ex) {
+            res.status(403).send('Error processing request');
+        }
+        res.status(200).json();
     }
     else {
         res.status(403).send('Error incorrect parameters!');
@@ -63,7 +99,7 @@ app.get("/api/getWallpaperLink/", (req, res) => __awaiter(void 0, void 0, void 0
     console.log(link);
     //Verify is provided valid link
     if (link) {
-        res.status(200).json(yield scraper_1.default.Scraper.getWallpaperLink('https://' + link));
+        res.status(200).json(yield (0, scraper_1.getWallpaperLink)('https://' + link));
     }
     else {
         res.status(400).send('Error incorrect parameters!');
