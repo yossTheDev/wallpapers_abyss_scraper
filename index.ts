@@ -84,10 +84,10 @@ app.get("/api/getRandomWallpaperCollection",async (req, res) => {
       let wallpapers = await getRandomWallpaperCollection(resolution,((category as unknown) as string))
       res.status(200).json(wallpapers);
     }catch(ex){
+      console.log(ex);
       res.status(403).send('Error processing request')
     }
-    res.status(200).json()
-
+    
   }else{
     res.status(403).send('Error incorrect parameters!')
   }
