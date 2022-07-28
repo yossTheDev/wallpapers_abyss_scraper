@@ -93,7 +93,7 @@ export async function getRandomWallpaper(resolution : Resolution, categories: st
         wallpaper = wallpapers[randomNumber(0,wallpapers.length)];
         
         //Get Wallpaper Donwload Link
-        let link = await getDesktopWallpaperDLink(wallpaper.link);
+        let link = await getDesktopWallpaperDLink(`https://${wallpaper.link}`);
 
         //Set Link
         wallpaper.link = link;
@@ -105,7 +105,7 @@ export async function getRandomWallpaper(resolution : Resolution, categories: st
         wallpaper = wallpapers[randomNumber(0,wallpapers.length)];
         
         //Get Wallpaper Donwload Link
-        let link = await getMobileWallpaperDLink(wallpaper.link);
+        let link = await getMobileWallpaperDLink(`https://${wallpaper.link}`);
 
         //Set Link
         wallpaper.link = link;
@@ -247,7 +247,7 @@ export async function getDesktopWallpaper (url : string): Promise<Wallpaper[]> {
 }
   
 /**
- * Get donwload link from https://wall.alphacoders.com/ wallpapers
+ * Get download link from https://wall.alphacoders.com/ wallpapers
  *
  * @param {string} url
  */
@@ -291,7 +291,7 @@ export async function getDesktopWallpaperDLink(url : string): Promise<string>{
 }
 
 /**
- * Get donwload link from https://mobile.alphacoders.com wallpapers
+ * Get download link from https://mobile.alphacoders.com wallpapers
  *
  * @param {string} url
  */

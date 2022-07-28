@@ -22,7 +22,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Wallpaper Abyss Scraper is running...');
 });
 
-/*Ger Random Wallpaper parameters => category(see the readme for all category codes) , resolution (mobile or desktop)
+/*Get Random Wallpaper parameters => category(see the readme for all category codes) , resolution (mobile or desktop)
 Example request .../api/getWallpaper?category=1&resolution=mobile
 parameters => category(see the readme for all category codes) , resolution (mobile or desktop)
 */
