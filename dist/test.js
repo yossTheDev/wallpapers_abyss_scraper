@@ -13,9 +13,10 @@ const scraper_1 = require("./services/scraper");
 function test() {
     return __awaiter(this, void 0, void 0, function* () {
         //var a = await Scraper.getWallpaperLink('http://localhost/wallpaperPage.html');
-        let a = randomNumber(20, 50);
-        let b = yield (0, scraper_1.getWallpaperImg)('https://wall.alphacoders.com/big.php?i=718222');
-        console.log(b);
+        //let a = randomNumber(20,50);
+        //let b = await getDesktopWallpaperDLink('https://wall.alphacoders.com/big.php?i=718222')
+        let c = yield (0, scraper_1.getRandomWallpaperCollection)(scraper_1.Resolution.Desktop, '2');
+        console.log(c);
     });
 }
 //Inclusive min exlusive max

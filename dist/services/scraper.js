@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWallpaperLink = exports.getWallpaperImg = exports.getDesktopWallpaper = exports.getMobileWallpaper = exports.getRandomWallpaperCollection = exports.getRandomWallpaper = exports.Resolution = void 0;
+exports.getMobileWallpaperDLink = exports.getDesktopWallpaperDLink = exports.getDesktopWallpaper = exports.getMobileWallpaper = exports.getRandomWallpaperCollection = exports.getRandomWallpaper = exports.Resolution = void 0;
 const cheerio = __importStar(require("cheerio"));
 const puppeteer = __importStar(require("puppeteer"));
 const axios_1 = __importDefault(require("axios"));
@@ -80,7 +80,7 @@ var Categories;
     Categories[Categories["Women"] = 33] = "Women";
 })(Categories || (Categories = {}));
 //#endregion
-//#region  Handy Tools
+//#region  Utility Tools
 //Inclusive min exlusive max
 function randomNumber(max, min) {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -98,32 +98,53 @@ function makeLink(resolution, categories) {
 ;
 //#endregion
 //#region Functions
-//Scraper Object
-let Scraper = {};
-//Get Random Wallpaper based in the category
+/**
+ * Get random wallpaper for the defined Resolution and Category
+ *
+ * @param {Resolution} resolution Wallpaper Resolution, Mobile or Desktop
+ * @param {string} categories Category Code see Readme.md for all category codes
+ */
 function getRandomWallpaper(resolution, categories) {
     return __awaiter(this, void 0, void 0, function* () {
-        let wallpapers;
+        let wallpaper;
         if (resolution === Resolution.Desktop) {
             //Get All wallpapers in the defined category page
-            wallpapers = yield getDesktopWallpaper(makeLink(resolution, categories) + `?page=${randomNumber(0, 100)}`);
+            let wallpapers = yield getDesktopWallpaper(makeLink(resolution, categories) + `&page=${randomNumber(0, 100)}`);
+            console.log(wallpapers);
+            //Get Random Wallpaper
+            wallpaper = wallpapers[randomNumber(0, wallpapers.length)];
+            //Get Wallpaper Donwload Link
+            let link = yield getDesktopWallpaperDLink(`https://${wallpaper.link}`);
+            //Set Link
+            wallpaper.link = link;
         }
         else {
             //Get All wallpapers in the defined category page
-            wallpapers = yield getMobileWallpaper(makeLink(resolution, categories) + `?page=${randomNumber(0, 100)}`);
+            let wallpapers = yield getMobileWallpaper(makeLink(resolution, categories) + `?page=${randomNumber(0, 100)}`);
+            //Get Random Wallpaper
+            wallpaper = wallpapers[randomNumber(0, wallpapers.length)];
+            //Get Wallpaper Donwload Link
+            let link = yield getMobileWallpaperDLink(`https://${wallpaper.link}`);
+            //Set Link
+            wallpaper.link = link;
         }
         //Return Random Wallpaper
-        return wallpapers[randomNumber(0, wallpapers.length)];
+        return wallpaper;
     });
 }
 exports.getRandomWallpaper = getRandomWallpaper;
-//Get Random Wallpaper Collection
+/**
+ * Get a collection of random wallpaper
+ *
+ * @param {Resolution} resolution Wallpaper Resolution, Mobile or Desktop
+ * @param {string} categories Category Code see Readme.md for all category codes
+ */
 function getRandomWallpaperCollection(resolution, categories) {
     return __awaiter(this, void 0, void 0, function* () {
         let wallpapers;
         if (resolution === Resolution.Desktop) {
             //Get All wallpapers in the defined category page
-            wallpapers = yield getDesktopWallpaper(makeLink(resolution, categories) + `?page=${randomNumber(0, 100)}`);
+            wallpapers = yield getDesktopWallpaper(makeLink(resolution, categories) + `&page=${randomNumber(0, 100)}`);
         }
         else {
             //Get All wallpapers in the defined category page
@@ -134,7 +155,11 @@ function getRandomWallpaperCollection(resolution, categories) {
     });
 }
 exports.getRandomWallpaperCollection = getRandomWallpaperCollection;
-//Get All Mobile Wallpapers of a Page
+/**
+ * Get wallpapers from https://mobile.alphacoders.com
+ *
+ * @param {string} url
+ */
 function getMobileWallpaper(url) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(url);
@@ -157,7 +182,8 @@ function getMobileWallpaper(url) {
             let wallpaper = {
                 id: el.attribs['id'],
                 wallpaperName: ((el.childNodes[1]).childNodes[1]).attribs['title'],
-                link: 'mobile.alphacoders.com' + (el.childNodes[1]).attribs['href']
+                link: 'mobile.alphacoders.com' + (el.childNodes[1]).attribs['href'],
+                thumb: ((el.childNodes[1]).childNodes[1]).attribs['src']
             };
             //console.log(wallpaper);
             //Add to the list
@@ -169,7 +195,11 @@ function getMobileWallpaper(url) {
     });
 }
 exports.getMobileWallpaper = getMobileWallpaper;
-//Get All Desktop Wallpapers of a Page
+/**
+ * Get wallpapers from https://wall.alphacoders.com/
+ *
+ * @param {string} url
+ */
 function getDesktopWallpaper(url) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(url);
@@ -189,10 +219,16 @@ function getDesktopWallpaper(url) {
         let wallpaperList = new Array();
         //Get all wallpapers => Note: In wallpapers abyss, wallpapers is a div with .thumb-element class
         $('div .thumb-container').map((i, el) => {
+            //console.log('Child One' +  (((((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1])));
+            //Child 2
+            //console.log((((((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[2])));
+            //console.log((((((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[3])));
+            //console.log((((((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[4])));
             let wallpaper = {
                 id: Math.random().toString(),
                 wallpaperName: el.childNodes[1].childNodes[1].attribs['title'],
-                link: 'wall.alphacoders.com' + el.childNodes[1].childNodes[1].attribs['href']
+                link: 'wall.alphacoders.com' + el.childNodes[1].childNodes[1].attribs['href'],
+                thumb: (el.childNodes[1].childNodes[1].childNodes[1].childNodes[3]).attribs['srcset'],
             };
             //console.log(wallpaper);
             //Add to the list
@@ -205,8 +241,12 @@ function getDesktopWallpaper(url) {
     });
 }
 exports.getDesktopWallpaper = getDesktopWallpaper;
-//Get Wallpaper Download => Link Unused Puppeteer Version
-function getWallpaperImg(url) {
+/**
+ * Get download link from https://wall.alphacoders.com/ wallpapers
+ *
+ * @param {string} url
+ */
+function getDesktopWallpaperDLink(url) {
     return __awaiter(this, void 0, void 0, function* () {
         //Config Puppeteer Browser
         const browser = yield puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
@@ -227,7 +267,7 @@ function getWallpaperImg(url) {
         //Extract all img and t the download link
         $('img').map((i, el) => {
             //console.log(el);
-            if (el.attribs['class'] === 'img-full-size')
+            if (el.attribs['class'] === 'img-responsive big-thumb thumb-desktop')
                 wallpaperUrl = el.attribs['src'];
         });
         //Close the Browser  
@@ -235,9 +275,13 @@ function getWallpaperImg(url) {
         return wallpaperUrl;
     });
 }
-exports.getWallpaperImg = getWallpaperImg;
-//Get Download Link
-function getWallpaperLink(url) {
+exports.getDesktopWallpaperDLink = getDesktopWallpaperDLink;
+/**
+ * Get download link from https://mobile.alphacoders.com wallpapers
+ *
+ * @param {string} url
+ */
+function getMobileWallpaperDLink(url) {
     return __awaiter(this, void 0, void 0, function* () {
         //Load url and get response
         const resp = yield axios_1.default.get(url);
@@ -255,5 +299,5 @@ function getWallpaperLink(url) {
         return wallpaperUrl;
     });
 }
-exports.getWallpaperLink = getWallpaperLink;
+exports.getMobileWallpaperDLink = getMobileWallpaperDLink;
 //#endregion

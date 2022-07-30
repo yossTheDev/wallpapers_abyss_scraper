@@ -29,8 +29,10 @@ app.use(express_1.default.json());
 app.get('/', (req, res) => {
     res.send('Wallpaper Abyss Scraper is running...');
 });
-//Ger Random Wallpaper parameters => category(see the readme for all category codes) , resolution (mobile or desktop)
-//Example request .../api/getWallpaper?category=1&resolution=mobile
+/*Get Random Wallpaper parameters => category(see the readme for all category codes) , resolution (mobile or desktop)
+Example request .../api/getWallpaper?category=1&resolution=mobile
+parameters => category(see the readme for all category codes) , resolution (mobile or desktop)
+*/
 app.get("/api/getRandomWallpaper", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //Get Category and Resolution Parameter => Category is a numer and resolution can be Mobile Or Desktop
     const category = url_1.default.parse(req.url, true).query["category"];
@@ -47,7 +49,6 @@ app.get("/api/getRandomWallpaper", (req, res) => __awaiter(void 0, void 0, void 
         //Try to get Wallpapers
         try {
             let wallpapers = yield (0, scraper_1.getRandomWallpaper)(resolution, category);
-            scraper_1.getRandomWallpaper;
             res.status(200).json(wallpapers);
         }
         catch (ex) {
@@ -59,9 +60,9 @@ app.get("/api/getRandomWallpaper", (req, res) => __awaiter(void 0, void 0, void 
         res.status(403).send('Error incorrect parameters!');
     }
 }));
-//TODO
 /*
-Ger Random Wallpaper Collection parameters => category(see the readme for all category codes) , resolution (mobile or desktop)
+Ger Random Wallpaper Collection
+parameters => category(see the readme for all category codes) , resolution (mobile or desktop)
 Example request .../api/getRandomWallpaperCollection?category=1&resolution=mobile
 */
 app.get("/api/getRandomWallpaperCollection", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -83,23 +84,33 @@ app.get("/api/getRandomWallpaperCollection", (req, res) => __awaiter(void 0, voi
             res.status(200).json(wallpapers);
         }
         catch (ex) {
+            console.log(ex);
             res.status(403).send('Error processing request');
         }
-        res.status(200).json();
     }
     else {
         res.status(403).send('Error incorrect parameters!');
     }
 }));
-//Get wallpaper download link
-//Example request .../api/getwallpaperLink?url=https://wall.alphacoders.com/big.php?i=20658
+/*Get Wallpaper Download Link
+parameters => category(see the readme for all category codes) , resolution (mobile or desktop)
+Example request .../api/getwallpaperLink?url=https://wall.alphacoders.com/big.php?i=20658&resolution=desktop
+*/
 app.get("/api/getWallpaperLink/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //Get link in urls parameters
     const link = url_1.default.parse(req.url, true).query["url"];
-    console.log(link);
-    //Verify is provided valid link
-    if (link) {
-        res.status(200).json(yield (0, scraper_1.getWallpaperLink)('https://' + link));
+    const resol = url_1.default.parse(req.url, true).query["resolution"];
+    //console.log(link)
+    //Verify is provided a valid link and wallpaper resolution
+    if (link && resol) {
+        if (resol === 'desktop') {
+            //Get Wallpaper for Desktop Resolution
+            res.status(200).json(yield (0, scraper_1.getDesktopWallpaperDLink)('https://' + link));
+        }
+        else {
+            //Get Wallpaper for Mobile Resolution
+            res.status(200).json(yield (0, scraper_1.getMobileWallpaperDLink)('https://' + link));
+        }
     }
     else {
         res.status(400).send('Error incorrect parameters!');

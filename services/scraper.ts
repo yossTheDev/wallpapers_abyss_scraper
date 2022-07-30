@@ -131,7 +131,7 @@ export async function getRandomWallpaperCollection(resolution : Resolution, cate
     if(resolution === Resolution.Desktop){
 
         //Get All wallpapers in the defined category page
-        wallpapers = await getDesktopWallpaper(makeLink(resolution,categories) + `?page=${randomNumber(0,100)}`)
+        wallpapers = await getDesktopWallpaper(makeLink(resolution,categories) + `&page=${randomNumber(0,100)}`)
     }else{
         //Get All wallpapers in the defined category page
         wallpapers = await getMobileWallpaper(makeLink(resolution,categories) + `?page=${randomNumber(0,100)}`)
@@ -224,17 +224,15 @@ export async function getDesktopWallpaper (url : string): Promise<Wallpaper[]> {
   
     //Get all wallpapers => Note: In wallpapers abyss, wallpapers is a div with .thumb-element class
     $('div .thumb-container').map((i,el)=>{
-
+       
         let wallpaper: Wallpaper=
         {
             id : Math.random().toString(), //ToDo Get the Real Wallpaper ID
             wallpaperName: ((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).attribs['title'],
             link: 'wall.alphacoders.com' +  ((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).attribs['href'],
-            thumb: (((((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[4]) as unknown as cheerio.Element).attribs['src'],
+            thumb: (((((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[3]) as unknown as cheerio.Element).attribs['srcset'],
         }
   
-       //console.log(wallpaper);
-
        //Add to the list
        wallpaperList.push(wallpaper);
       });
