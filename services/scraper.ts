@@ -89,6 +89,8 @@ export async function getRandomWallpaper(resolution : Resolution, categories: st
         //Get All wallpapers in the defined category page
         let wallpapers = await getDesktopWallpaper(makeLink(resolution,categories) + `&page=${randomNumber(0,100)}`)
 
+        console.log(wallpapers);
+
         //Get Random Wallpaper
         wallpaper = wallpapers[randomNumber(0,wallpapers.length)];
         
