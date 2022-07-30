@@ -44,8 +44,7 @@ app.get("/api/getRandomWallpaper",async (req, res) => {
 
     //Try to get Wallpapers
     try{
-      let wallpapers = await getRandomWallpaper(resolution,((category as unknown) as string))
-      getRandomWallpaper
+      let wallpapers = await getRandomWallpaper(resolution,((category as unknown) as string));
       res.status(200).json(wallpapers);
     }catch(ex){
       res.status(403).send('Error processing request')
