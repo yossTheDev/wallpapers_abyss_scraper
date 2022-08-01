@@ -2,9 +2,7 @@
 
 Simple and usefull scraper for Wallpaper Abyss and Mobile Abyss pages. I use ``Puppeteer`` and ``cheerio`` to load and parse data respectively. I also includes full funtional API. Writted in TypeScript
 
-## 💡 How To Use
-
-### Endpoints
+## Endpoints
 
 ``Get Random Wallpaper``
 
@@ -47,18 +45,30 @@ Get Random Wallpaper for the defined resolution and category
 ```json
 
 {
-  "id": "wallpaper_938159",
-  "wallpaperName": "Animal Cat & Dog Phone Wallpaper",
-  "link": "mobile.alphacoders.com/wallpapers/view/938159/Animal-Cat-%26-Dog-Phone-Wallpaper"
-}
+    "id": "0.6933746935077301",
+    "wallpaperName": "Video Game Final Fantasy XIII HD Wallpaper | Background Image",
+    "link": "wall.alphacoders.com/big.php?i=86350",
+    "thumb": "https://images2.alphacoders.com/863/thumb-350-86350.jpg"
+  },
+  {
+    "id": "0.9816691247325329",
+    "wallpaperName": "Video Game EVE Online HD Wallpaper | Background Image",
+    "link": "wall.alphacoders.com/big.php?i=77078",
+    "thumb": "https://images4.alphacoders.com/770/thumb-350-77078.jpg"
+  },
+  {
+    "id": "0.5496456355215082",
+    "wallpaperName": "Video Game Resident Evil 5 HD Wallpaper | Background Image",
+    "link": "wall.alphacoders.com/big.php?i=59391",
+    "thumb": "https://images.alphacoders.com/593/thumb-350-59391.jpg"
+  },
+  {
+    "id": "0.4378857649322374",
+    "wallpaperName": "Video Game Unreal Tournament HD Wallpaper | Background Image",
+    "link": "wall.alphacoders.com/big.php?i=23447",
+    "thumb": "https://images3.alphacoders.com/234/thumb-350-23447.jpg"
+  }
 
-{
-  "id": "wallpaper_939150",
-  "wallpaperName": "Animal Cat & Dog Phone Wallpaper",
-  "link": "mobile.alphacoders.com/wallpapers/view/938159/Animal-Cat-%26-Dog-Phone-Wallpaper"
-}
-
-{...}
 ```
 
 ### Get Wallpaper Download Link
@@ -126,7 +136,7 @@ enum Categories
 
 ## 📝📌 TO DO
 
--Get Random Wallpaper without category
+-Get Random Wallpaper Without Category
 
 -Get Wallpapers by Subcategory
 
