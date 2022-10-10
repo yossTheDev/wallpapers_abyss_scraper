@@ -225,13 +225,28 @@ export async function getDesktopWallpaper (url : string): Promise<Wallpaper[]> {
     //Get all wallpapers => Note: In wallpapers abyss, wallpapers is a div with .thumb-element class
     $('div .thumb-container').map((i,el)=>{
        
-        let wallpaper: Wallpaper=
-        {
-            id : Math.random().toString(), //ToDo Get the Real Wallpaper ID
-            wallpaperName: ((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).attribs['title'],
-            link: 'wall.alphacoders.com' +  ((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).attribs['href'],
-            thumb: (((((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[3]) as unknown as cheerio.Element).attribs['srcset'],
-        }
+      const wallpaper: Wallpaper = {
+      // id: Math.random().toString(), // ToDo Get the Real Wallpaper ID
+      id: (el.parent as cheerio.Element).attribs["id"],
+      wallpaperName: (
+        (el.childNodes[1] as unknown as cheerio.Element)
+          .childNodes[1] as unknown as cheerio.Element
+      ).attribs.title,
+      link:
+        "wall.alphacoders.com" +
+        (
+          (el.childNodes[1] as unknown as cheerio.Element)
+            .childNodes[1] as unknown as cheerio.Element
+        ).attribs.href,
+      thumb: (
+        (
+          (
+            (el.childNodes[1] as unknown as cheerio.Element)
+              .childNodes[1] as unknown as cheerio.Element
+          ).childNodes[1] as unknown as cheerio.Element
+        ).childNodes[3] as unknown as cheerio.Element
+      ).attribs.srcset,
+    };
   
        //Add to the list
        wallpaperList.push(wallpaper);
