@@ -81,7 +81,7 @@ app.get("/api/getRandomWallpaperCollection", (req, res) => __awaiter(void 0, voi
         //Try to get Wallpapers
         try {
             let wallpapers = yield (0, scraper_1.getRandomWallpaperCollection)(resolution, category);
-            res.status(200).json(wallpapers);
+            res.status(200).json({ 'items': wallpapers });
         }
         catch (ex) {
             console.log(ex);

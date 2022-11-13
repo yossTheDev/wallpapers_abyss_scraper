@@ -219,18 +219,17 @@ function getDesktopWallpaper(url) {
         let wallpaperList = new Array();
         //Get all wallpapers => Note: In wallpapers abyss, wallpapers is a div with .thumb-element class
         $('div .thumb-container').map((i, el) => {
-            //console.log('Child One' +  (((((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1])));
-            //Child 2
-            //console.log((((((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[2])));
-            //console.log((((((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[3])));
-            //console.log((((((el.childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[1] as unknown as cheerio.Element).childNodes[4])));
-            let wallpaper = {
-                id: Math.random().toString(),
-                wallpaperName: el.childNodes[1].childNodes[1].attribs['title'],
-                link: 'wall.alphacoders.com' + el.childNodes[1].childNodes[1].attribs['href'],
-                thumb: (el.childNodes[1].childNodes[1].childNodes[1].childNodes[3]).attribs['srcset'],
+            const wallpaper = {
+                // id: Math.random().toString(), // ToDo Get the Real Wallpaper ID
+                id: el.parent.attribs["id"],
+                wallpaperName: el.childNodes[1]
+                    .childNodes[1].attribs.title,
+                link: "wall.alphacoders.com" +
+                    el.childNodes[1]
+                        .childNodes[1].attribs.href,
+                thumb: el.childNodes[1]
+                    .childNodes[1].childNodes[1].childNodes[3].attribs.srcset,
             };
-            //console.log(wallpaper);
             //Add to the list
             wallpaperList.push(wallpaper);
         });
